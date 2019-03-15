@@ -58,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                        User u = dataSnapshot.getValue(User.class);
                        if(u!=null && u.password!=null && u.password.equals(edtMK.getText().toString())){
-                           Toasts("Đăng nhập thành công");
+                           Intent intent = new Intent(MainActivity.this,NguoiDungActivity.class);
+                           intent.putExtra("SDT",u.SDT);
+                           startActivity(intent);
                        }
                        else{
                            Toasts("Sai mật khẩu");

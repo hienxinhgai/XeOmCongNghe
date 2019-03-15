@@ -55,7 +55,7 @@ public class dangky extends AppCompatActivity {
 
             @Override
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-                signInWithPhoneAuthCredential(phoneAuthCredential);
+//                signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 
             @Override
