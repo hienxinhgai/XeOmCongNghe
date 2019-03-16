@@ -37,6 +37,7 @@
         android:layout_marginTop="116dp"
         android:ems="10"
         android:inputType="number"
+        android:text="0394595544"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,6 +73,7 @@
         android:layout_marginTop="64dp"
         android:ems="10"
         android:inputType="textPassword"
+        android:text="123456"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/edtsdt" />
 </android.support.constraint.ConstraintLayout>
