@@ -75,6 +75,7 @@ public class dangky extends AppCompatActivity {
         btnSentCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                edtSDT.setEnabled(false);
                 //hàm dùng để gửi mã xác nhận vào điện thoại
                 //mCallbacks dùng để xác nhận xem mã đã được gửi đi chưa, mã nhập vào đã đúng chưa
                  PhoneAuthProvider.getInstance().verifyPhoneNumber(
