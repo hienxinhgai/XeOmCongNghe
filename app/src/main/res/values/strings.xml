@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">BTL</string>
     <string name="title_activity_nguoi_dung">Map</string>
+    <string name="title_activity_lai_xe">Map</string>
 </resources>

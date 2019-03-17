@@ -5,9 +5,12 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -16,6 +19,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class NguoiDungActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -24,6 +32,9 @@ public class NguoiDungActivity extends FragmentActivity implements OnMapReadyCal
     private LocationManager locationManager;
     private LocationListener locationListener;
     private Location GPS;
+    private DatabaseReference database;
+    private Button btnCallDriver;
+    private boolean datXe;
     private void Toasts(String s) {
         Toast.makeText(NguoiDungActivity.this, s, Toast.LENGTH_LONG).show();
     }
@@ -33,13 +44,19 @@ public class NguoiDungActivity extends FragmentActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nguoi_dung);
 
+        btnCallDriver = (Button) findViewById(R.id.btnCallDriver);
+        database = FirebaseDatabase.getInstance().getReference();
         SDT = getIntent().getStringExtra("SDT");
+
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                //luu vi tri hien tai vao GPS
+                //luu vi tri vao firebase database
                 GPS=location;
+                database.child("GPS_NguoiDung").child(SDT).setValue(new LatLng(GPS.getLatitude(),GPS.getLongitude()));
             }
 
             @Override
@@ -57,6 +74,7 @@ public class NguoiDungActivity extends FragmentActivity implements OnMapReadyCal
 
             }
         };
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -74,13 +92,33 @@ public class NguoiDungActivity extends FragmentActivity implements OnMapReadyCal
         //goi den ham onLocationChanged o tren
         locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
 
+        //click nut dat xe
+        btnCallDriver.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            database.child("yeuCauDatXe").child(SDT).setValue(1);
+            Toasts("Đã đặt xe, dang tìm tài xế");
+            database.child("yeuCauDatXe").child(SDT).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue().toString().equals("0"))
+                        Toasts("Đặt xe thành công");
+                }
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    });
+
+    // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+            .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-    }
+}
 
 
     /**

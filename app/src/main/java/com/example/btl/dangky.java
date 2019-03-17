@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class dangky extends AppCompatActivity {
+    CheckBox ckbLaiXe;
     Button btnDangKy, btnSentCode;
     EditText edtHoTen, edtSDT,edtMK,edtNLMK,edtAuthCode;
     PhoneAuthProvider.ForceResendingToken mResendToken;
@@ -41,6 +43,7 @@ public class dangky extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dangky);
+        ckbLaiXe = findViewById(R.id.ckbxLaiXe);
         btnDangKy = (Button) findViewById(R.id.button);
         edtHoTen = (EditText)findViewById(R.id.edtHoTen);
         edtSDT = (EditText)findViewById(R.id.edtSDT);
@@ -119,6 +122,7 @@ public class dangky extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
 //                            FirebaseUser user = task.getResult().getUser();
                             User u = new User();
+                            u.LaiXe = ckbLaiXe.isChecked();
                             u.Hoten = edtHoTen.getText().toString();
                             u.SDT = edtSDT.getText().toString();
                             u.password = edtMK.getText().toString();

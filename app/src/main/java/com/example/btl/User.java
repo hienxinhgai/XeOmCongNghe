@@ -8,14 +8,16 @@ public class User {
     public String password;
     public String Hoten;
     public String SDT;
+    public boolean LaiXe;
 
     public User(){
 
     }
-    public User(String sdt,String pass,String hoten){
+    public User(String sdt,String pass,String hoten, boolean laixe){
         password=pass;
         Hoten=hoten;
         SDT=sdt;
+        LaiXe = laixe;
     }
 }
 

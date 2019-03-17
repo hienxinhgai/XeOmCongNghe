@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +23,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     Button btnDangKy, btnDangNhap;
     EditText edtSDT,edtMK;
-
     DatabaseReference database;
 
     private void Toasts(String s){
@@ -57,7 +57,13 @@ public class MainActivity extends AppCompatActivity {
                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                        User u = dataSnapshot.getValue(User.class);
                        if(u!=null && u.password!=null && u.password.equals(edtMK.getText().toString())){
-                           Intent intent = new Intent(MainActivity.this,NguoiDungActivity.class);
+                           Intent intent;
+                           if(u.LaiXe==true){
+                               intent = new Intent(MainActivity.this,LaiXeActivity.class);
+                           }
+                           else{
+                               intent = new Intent(MainActivity.this,NguoiDungActivity.class);
+                           }
                            intent.putExtra("SDT",u.SDT);
                            startActivity(intent);
                        }
@@ -76,5 +82,4 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 }
