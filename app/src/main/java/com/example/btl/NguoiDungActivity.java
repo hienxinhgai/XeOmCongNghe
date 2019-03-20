@@ -1,14 +1,18 @@
 package com.example.btl;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -34,7 +38,7 @@ public class NguoiDungActivity extends FragmentActivity implements OnMapReadyCal
     private Location GPS;
     private DatabaseReference database;
     private Button btnCallDriver;
-    private boolean datXe;
+
     private void Toasts(String s) {
         Toast.makeText(NguoiDungActivity.this, s, Toast.LENGTH_LONG).show();
     }
@@ -43,19 +47,31 @@ public class NguoiDungActivity extends FragmentActivity implements OnMapReadyCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nguoi_dung);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(NguoiDungActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
+        }
 
         btnCallDriver = (Button) findViewById(R.id.btnCallDriver);
         database = FirebaseDatabase.getInstance().getReference();
         SDT = getIntent().getStringExtra("SDT");
 
-
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        //kiem tra bat gps chua
+        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            Toasts("chưa bật gps");
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
+
+//        Toasts("Khoi tao" + GPS.getLatitude() + " " + GPS.getLongitude());
+
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 //luu vi tri hien tai vao GPS
                 //luu vi tri vao firebase database
                 GPS=location;
+//                Toasts(GPS.getLatitude() + " " + GPS.getLongitude());
                 database.child("GPS_NguoiDung").child(SDT).setValue(new LatLng(GPS.getLatitude(),GPS.getLongitude()));
             }
 
@@ -67,22 +83,18 @@ public class NguoiDungActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onProviderEnabled(String provider) {
 
+
             }
 
             @Override
             public void onProviderDisabled(String provider) {
-
+                // Call your Alert message
+                Toasts("chưa bật gps");
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
             }
         };
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             ActivityCompat.requestPermissions(NguoiDungActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
 
@@ -90,12 +102,16 @@ public class NguoiDungActivity extends FragmentActivity implements OnMapReadyCal
         }
         //sau 5 giay update vi tri mot lan
         //goi den ham onLocationChanged o tren
-        locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
+        locationManager.requestLocationUpdates("gps", 5000, 1, locationListener);
 
         //click nut dat xe
         btnCallDriver.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if(GPS==null){
+                Toasts("Chưa lấy được vị trí");
+                return;
+            }
             database.child("yeuCauDatXe").child(SDT).setValue(1);
             Toasts("Đã đặt xe, dang tìm tài xế");
             database.child("yeuCauDatXe").child(SDT).addValueEventListener(new ValueEventListener() {
@@ -152,5 +168,21 @@ public class NguoiDungActivity extends FragmentActivity implements OnMapReadyCal
 
 //        LatLng locationcurent = new LatLng(GPS.getLatitude(),GPS.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(home,15));
+
+        //di chuyen camera den vi tri hien tai
+        GPS = locationManager.getLastKnownLocation("gps");
+        if(GPS!=null){
+            database.child("GPS_NguoiDung").child(SDT).setValue(new LatLng(GPS.getLatitude(),GPS.getLongitude()));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(GPS.getLatitude(),GPS.getLongitude()),17));
+        }
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        //tat update vi tri
+        Toasts("Đăng xuất thành công");
+        locationManager.removeUpdates(locationListener);
+        locationManager=null;
     }
 }
