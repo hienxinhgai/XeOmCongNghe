@@ -4,11 +4,13 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -129,7 +131,21 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
                 startActivityForResult(intent,1);
                 return true;
             case R.id.itemLogout:
-                Toasts("dang xuat");
+                onDestroy();
+                return true;
+            case R.id.itemCallClient:
+                if (ContextCompat.checkSelfPermission(LaiXeActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(LaiXeActivity.this, new String[]{Manifest.permission.CALL_PHONE},2);
+                }
+                else if(SDTKhach==null){
+                    Toasts("Chưa nhận chuyến");
+                }
+                else
+                {
+                    Intent intentCall = new Intent(Intent.ACTION_CALL);
+                    intentCall.setData(Uri.parse("tel:" + SDTKhach));
+                    startActivity(intentCall);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -145,5 +161,11 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        Toasts("Đăng xuất thành công");
     }
 }
