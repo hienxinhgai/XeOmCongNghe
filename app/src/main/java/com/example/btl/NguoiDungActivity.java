@@ -12,7 +12,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -29,7 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class NguoiDungActivity extends FragmentActivity implements OnMapReadyCallback {
+public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCallback  {
 
     private GoogleMap mMap;
     private String SDT;
@@ -184,5 +187,22 @@ public class NguoiDungActivity extends FragmentActivity implements OnMapReadyCal
         Toasts("Đăng xuất thành công");
         locationManager.removeUpdates(locationListener);
         locationManager=null;
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_nguoi_dung,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.itemDangXuat:
+                Intent inten = new Intent(NguoiDungActivity.this,MainActivity.class);
+                startActivity(inten);
+            case R.id.itemDoiMatKhau:
+                Intent inten1 = new Intent(NguoiDungActivity.this,DoiMatKhauActivity.class);
+                startActivity(inten1);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
