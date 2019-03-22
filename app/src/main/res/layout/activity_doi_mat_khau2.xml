@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/edtMatKhau"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="52dp"
@@ -61,7 +61,7 @@
         android:ems="10"
         android:inputType="textPassword"
         app:layout_constraintStart_toEndOf="@+id/textView9"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/edtMatKhau" />
 
     <EditText
         android:id="@+id/edtNhapLaiMatKhau"
@@ -76,14 +76,14 @@
         app:layout_constraintTop_toBottomOf="@+id/edtMatKhauMoi" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btnDoiMatKhau"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="220dp"
         android:layout_marginLeft="220dp"
         android:layout_marginTop="144dp"
+        android:background="@color/colorPrimary"
         android:text="Đổi mật khẩu"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtNhapLaiMatKhau"
-        android:background="@color/colorPrimary"/>
+        app:layout_constraintTop_toBottomOf="@+id/edtNhapLaiMatKhau" />
 </android.support.constraint.ConstraintLayout>

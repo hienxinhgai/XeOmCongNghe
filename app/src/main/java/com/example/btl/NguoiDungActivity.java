@@ -183,6 +183,9 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onDestroy(){
         super.onDestroy();
+        //neu activity dong no goi den ham destroy
+        // la sao
+        //mở activity nó chạy hàm oncreat, đóng activity nó chạy hàm ondestroy
         //tat update vi tri
         Toasts("Đăng xuất thành công");
         locationManager.removeUpdates(locationListener);
@@ -196,11 +199,23 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.itemDangXuat:
-                Intent inten = new Intent(NguoiDungActivity.this,MainActivity.class);
-                startActivity(inten);
+                //ham finish de dong activity
+                // the h xuống đây goi hàm kia la dk á
+                // nó gọi tự động
+                //muốn đóng mình chỉ cần finish là được rồi
+                // k đúng nó phải ra cái khac chư
+                //vi đóng activityDoiMK c khong finish mà gọi intent
+                //nên khi đóng nó lại quay lại
+                finish();
+                return true;
+                //hieu roi
+                //switch case khong break no chay tiep cai duoi ok
             case R.id.itemDoiMatKhau:
                 Intent inten1 = new Intent(NguoiDungActivity.this,DoiMatKhauActivity.class);
+                inten1.putExtra("SDT",SDT); // roi sao nua
+                //putExtra de gui du lieu qua activity khac
                 startActivity(inten1);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
