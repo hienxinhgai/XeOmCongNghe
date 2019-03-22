@@ -38,7 +38,7 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
     private String SDTKhach;
 
     private void Toasts(String s) {
-        Toast.makeText(LaiXeActivity.this, s, Toast.LENGTH_LONG).show();
+        Toast.makeText(LaiXeActivity.this, s, Toast.LENGTH_SHORT).show();
     }
 
     @Override

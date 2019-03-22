@@ -27,7 +27,6 @@ public class dangky extends AppCompatActivity {
     CheckBox ckbLaiXe;
     Button btnDangKy, btnSentCode;
     EditText edtHoTen, edtSDT,edtMK,edtNLMK,edtAuthCode;
-    PhoneAuthProvider.ForceResendingToken mResendToken;
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     String authCode;
     PhoneAuthProvider.ForceResendingToken token ;

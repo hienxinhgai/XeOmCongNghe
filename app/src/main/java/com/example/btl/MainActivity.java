@@ -1,8 +1,12 @@
 package com.example.btl;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -29,8 +33,24 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference database;
 
     private void Toasts(String s){
-         Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
+         Toast.makeText(MainActivity.this,s,Toast.LENGTH_SHORT).show();
      }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
+    }
+
+    private  boolean isGPSEnable(){
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+//            Toasts("chưa bật gps");
+//            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            return false;
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +60,16 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
         }
+        if(!isNetworkConnected()){
+            Toasts("Chưa kết nối internet");
+        }
+        if(!isGPSEnable()){
+            Toasts("Chưa bật gps");
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
+
+
+
         btnDangKy =   (Button) findViewById(R.id.btndk);
         btnDangNhap = (Button) findViewById(R.id.btndn );
         edtSDT = (EditText) findViewById(R.id.edtsdt) ;

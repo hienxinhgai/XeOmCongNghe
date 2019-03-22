@@ -193,7 +193,7 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
                 .title("Nhà tín"));
 
 //        LatLng locationcurent = new LatLng(GPS.getLatitude(),GPS.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(home,15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(home,17));
 
         //di chuyen camera den vi tri hien tai
         Location l = locationManager.getLastKnownLocation("gps");
