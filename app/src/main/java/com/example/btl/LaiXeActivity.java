@@ -35,7 +35,6 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
     private GoogleMap mMap;
     private DatabaseReference database;
     private Button btnGetLocationCustom;
-    private LatLng ViTriKhach;
     private String SDTKhach;
 
     private void Toasts(String s) {

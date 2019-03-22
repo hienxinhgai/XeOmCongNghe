@@ -37,6 +37,7 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
     private ListView lvYeuCauDatXe;
     private DatabaseReference database;
     private List<DatXe> list;
+    private List<String>listView;
     private LocationManager locationManager;
     private LocationListener locationListener;
     private LatLng myLocation;
@@ -64,7 +65,7 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
                 //luu vi tri hien tai vao GPS
                 //luu vi tri vao firebase database
-                myLocation=new LatLng(location.getLatitude(),location.getLongitude());
+                myLocation = new LatLng(location.getLatitude(),location.getLongitude());
 //                Toasts(GPS.getLatitude() + " " + GPS.getLongitude());
 
             }
@@ -104,16 +105,21 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 list = new ArrayList<DatXe>();
+                listView = new ArrayList<String>();
                 for(DataSnapshot dts : dataSnapshot.getChildren()){
                     DatXe d = dts.getValue(DatXe.class);
-                    if(d.check==true)
+                    if(d.check==true){
                         list.add(d);
-//                    if(dts.getValue().toString().equals("1"))
-//                        list.add(dts.getKey().toString());
+                        LatLng l = new LatLng(d.lat,d.lng);
+                        if(myLocation!=null)
+                            listView.add("vị trí cách bạn " + MyFunction.khoagCach(l,myLocation) + " km");
+                        else
+                            listView.add("vị trí đang cập nhật");
+                    }
                 }
 
-                ArrayAdapter<DatXe> arrayAdapter
-                        = new ArrayAdapter<DatXe>(YeuCauDatXeActivity.this, android.R.layout.simple_list_item_1 , list);
+                ArrayAdapter<String> arrayAdapter
+                        = new ArrayAdapter<String>(YeuCauDatXeActivity.this, android.R.layout.simple_list_item_1 ,listView);
                 lvYeuCauDatXe.setAdapter(arrayAdapter);
 
 
@@ -125,7 +131,7 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
             }
         });
 
-  
+
 
         lvYeuCauDatXe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -140,7 +146,7 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
                             message += MyFunction.khoagCach(myLocation,location) + " km";
                         }
                         message += "\nQuãng đường: " + d.khoangCach;
-                        message += "\nChi phí: " + d.chiPhi + "\n";
+                        message += "\nTổng tiền: " + d.chiPhi + "\n";
 
 
                         new AlertDialog.Builder(YeuCauDatXeActivity.this)

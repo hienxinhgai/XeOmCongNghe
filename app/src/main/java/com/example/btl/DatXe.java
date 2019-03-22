@@ -1,6 +1,8 @@
 package com.example.btl;
 
-import com.google.android.gms.maps.model.LatLng;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 
 public class DatXe {
     public String SDT;
@@ -22,3 +24,4 @@ public class DatXe {
         lng=lo;
     }
 }
+
