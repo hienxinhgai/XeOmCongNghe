@@ -19,6 +19,12 @@ public class MyFunction {
         return Math.round(d*10000)*1.0/10000;
     }
 
+    public static int chiPhi(LatLng start, LatLng end){
+        int gia = (int) Math.round(khoagCach(start,end)*10000);
+        if(gia<10000)
+            gia=10000;
+        return gia;
+    }
 
 }
 

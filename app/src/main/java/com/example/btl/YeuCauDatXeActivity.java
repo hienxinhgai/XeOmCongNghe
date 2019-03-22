@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -35,7 +36,7 @@ import java.util.List;
 public class YeuCauDatXeActivity extends AppCompatActivity {
     private ListView lvYeuCauDatXe;
     private DatabaseReference database;
-    private List<String> list;
+    private List<DatXe> list;
     private LocationManager locationManager;
     private LocationListener locationListener;
     private LatLng myLocation;
@@ -98,20 +99,24 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
         locationManager.requestLocationUpdates("gps", 1000, 1, locationListener);
         database = FirebaseDatabase.getInstance().getReference();
         lvYeuCauDatXe= (ListView)findViewById(R.id.lvYeuCauDatXe);
+
         database.child("yeuCauDatXe").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                list = new ArrayList<>();
+                list = new ArrayList<DatXe>();
                 for(DataSnapshot dts : dataSnapshot.getChildren()){
-                    if(dts.getValue().toString().equals("1"))
-                        list.add(dts.getKey().toString());
+                    DatXe d = dts.getValue(DatXe.class);
+                    if(d.check==true)
+                        list.add(d);
+//                    if(dts.getValue().toString().equals("1"))
+//                        list.add(dts.getKey().toString());
                 }
 
-                ArrayAdapter<String> arrayAdapter
-                        = new ArrayAdapter<String>(YeuCauDatXeActivity.this, android.R.layout.simple_list_item_1 , list);
+                ArrayAdapter<DatXe> arrayAdapter
+                        = new ArrayAdapter<DatXe>(YeuCauDatXeActivity.this, android.R.layout.simple_list_item_1 , list);
                 lvYeuCauDatXe.setAdapter(arrayAdapter);
-//                ArrayAdapter<String> arrayAdapter
-//                        = new ArrayAdapter<String>(YeuCauDatXeActivity.this, android.R.layout.simple_list_item_1 , td);
+
+
             }
 
             @Override
@@ -120,32 +125,35 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
             }
         });
 
+  
+
         lvYeuCauDatXe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-//                Toasts("đặt xe từ " + list.get(position));
-                String sdt=list.get(position);
-                database.child("GPS_NguoiDung").child(sdt).addListenerForSingleValueEvent(new ValueEventListener() {
+                final DatXe d=list.get(position);
+                database.child("GPS_NguoiDung").child(d.SDT).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         LatLng location = new LatLng(dataSnapshot.child("latitude").getValue(double.class),dataSnapshot.child("longitude").getValue(double.class));
-                        String message= "SĐT khách: " + list.get(position) + "\nVi tri cách bạn: " ;
+                        String message= "SĐT khách: " + d.SDT + "\nVi trí khách cách bạn: " ;
                         if(myLocation!=null){
-                            message += MyFunction.khoagCach(myLocation,location) + " km\n";
+                            message += MyFunction.khoagCach(myLocation,location) + " km";
                         }
+                        message += "\nQuãng đường: " + d.khoangCach;
+                        message += "\nChi phí: " + d.chiPhi + "\n";
 
 
-                        new AlertDialog.Builder(YeuCauDatXeActivity.this).setTitle("Thông tin chuyến")
+                        new AlertDialog.Builder(YeuCauDatXeActivity.this)
+                                .setTitle("Thông tin chuyến")
                                 .setMessage(message)
                                 .setPositiveButton("Nhận", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         Intent intent = new Intent();
-                                        intent.putExtra("SDTKhach",list.get(position));
+                                        intent.putExtra("SDTKhach",d.SDT);
                                         setResult(Activity.RESULT_OK,intent);
-//                                startActivity(intent);
-                                        Toasts("nhận chuyến từ " + list.get(position));
-                                        database.child("yeuCauDatXe").child(list.get(position)).setValue(0);
+                                        Toasts("nhận chuyến từ " + d.SDT);
+                                        database.child("yeuCauDatXe").child(d.SDT).child("check").setValue(false);
                                         finish();
                                     }
                                 })
@@ -170,3 +178,4 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
         });
     }
 }
+

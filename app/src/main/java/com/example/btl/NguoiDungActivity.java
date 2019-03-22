@@ -1,7 +1,9 @@
 package com.example.btl;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -12,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -38,12 +41,13 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
     private String SDT;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private Location GPS;
+    private LatLng GPS;
     private DatabaseReference database;
     private Button btnCallDriver;
+    private LatLng DiemDen;
 
     private void Toasts(String s) {
-        Toast.makeText(NguoiDungActivity.this, s, Toast.LENGTH_LONG).show();
+        Toast.makeText(NguoiDungActivity.this, s, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -73,9 +77,9 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
             public void onLocationChanged(Location location) {
                 //luu vi tri hien tai vao GPS
                 //luu vi tri vao firebase database
-                GPS=location;
+                GPS=new LatLng(location.getLatitude(),location.getLongitude());
 //                Toasts(GPS.getLatitude() + " " + GPS.getLongitude());
-                database.child("GPS_NguoiDung").child(SDT).setValue(new LatLng(GPS.getLatitude(),GPS.getLongitude()));
+                database.child("GPS_NguoiDung").child(SDT).setValue(new LatLng(GPS.latitude,GPS.longitude));
             }
 
             @Override
@@ -100,35 +104,61 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(NguoiDungActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
-
-            return;
         }
-        //sau 5 giay update vi tri mot lan
+        //sau 1 giay update vi tri mot lan
         //goi den ham onLocationChanged o tren
-        locationManager.requestLocationUpdates("gps", 5000, 1, locationListener);
+        locationManager.requestLocationUpdates("gps", 1000, 1, locationListener);
 
         //click nut dat xe
         btnCallDriver.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(GPS==null){
-                Toasts("Chưa lấy được vị trí");
+            if(DiemDen==null){
+                Toasts("click vào bản đồ đề chọn điểm cần đến");
                 return;
             }
-            database.child("yeuCauDatXe").child(SDT).setValue(1);
-            Toasts("Đã đặt xe, dang tìm tài xế");
-            database.child("yeuCauDatXe").child(SDT).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.getValue().toString().equals("0"))
-                        Toasts("Đặt xe thành công");
-                }
+            if(GPS==null){
+                Toasts("Chưa lấy được vị trí, xin vui lòng thử lại");
+                return;
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            final DatXe datxe = new DatXe();
+            datxe.SDT = SDT;
+            datxe.khoangCach = MyFunction.khoagCach(GPS,DiemDen);
+            datxe.chiPhi = MyFunction.chiPhi(GPS,DiemDen);
+            datxe.lat = GPS.latitude;
+            datxe.lng = GPS.longitude;
+            datxe.check=true;
 
-                }
-            });
+            String message="Khoảng cách: " + datxe.khoangCach + " km"
+                    +"\nGiá cả: 10 000đ/1km đầu"
+                    + "\nChi phí: " + datxe.chiPhi + " đồng";
+            new AlertDialog.Builder(NguoiDungActivity.this)
+                    .setTitle("Thông tin đặt xe")
+                    .setMessage(message)
+                    .setPositiveButton("Đặt", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            database.child("yeuCauDatXe").child(SDT).setValue(datxe);
+                            Toasts("Đã đặt xe, dang tìm tài xế");
+                            database.child("yeuCauDatXe").child(datxe.SDT).child("check").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if(dataSnapshot.getValue().toString().equals("false"))
+                                            Toasts("Đặt xe thành công");
+                                    }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    })
+                    .setNegativeButton("Hủy",null)
+                    .show();
+
+
         }
     });
 
@@ -153,13 +183,6 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             ActivityCompat.requestPermissions(NguoiDungActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
         }
@@ -173,11 +196,24 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(home,15));
 
         //di chuyen camera den vi tri hien tai
-        GPS = locationManager.getLastKnownLocation("gps");
+        Location l = locationManager.getLastKnownLocation("gps");
+        if(l!=null)
+            GPS = new LatLng(l.getLatitude(),l.getLongitude());
+
         if(GPS!=null){
-            database.child("GPS_NguoiDung").child(SDT).setValue(new LatLng(GPS.getLatitude(),GPS.getLongitude()));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(GPS.getLatitude(),GPS.getLongitude()),17));
+            database.child("GPS_NguoiDung").child(SDT).setValue(new LatLng(GPS.latitude,GPS.longitude));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(GPS.latitude,GPS.longitude),17));
         }
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                mMap.clear();
+                DiemDen=latLng;
+                mMap.addMarker(new MarkerOptions().title("Điểm đến")
+                .position(DiemDen));
+            }
+        });
     }
 
     @Override
