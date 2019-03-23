@@ -15,7 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "730226551889-4fdoagq00eqto4qbu0q4qr44f21rbnns.apps.googleusercontent.com",
+          "client_id": "730226551889-6i8dpapj0j6n1mb1ugvhcn1e6ss9d7j0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.btl",
@@ -23,13 +23,13 @@
           }
         },
         {
-          "client_id": "730226551889-f2u7mgv1hqiv00nrlp620m8887l20fo7.apps.googleusercontent.com",
+          "client_id": "730226551889-cj823cc8d0kpepd5fibsr8h5nbmdq88g.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCwQBo4Sx4RMPnQUwnxhCcU-YstXCvY-0I"
+          "current_key": "AIzaSyAqv8zngFpnl_wiSuT5gmUVAQ6PrVICzIQ"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "730226551889-f2u7mgv1hqiv00nrlp620m8887l20fo7.apps.googleusercontent.com",
+              "client_id": "730226551889-cj823cc8d0kpepd5fibsr8h5nbmdq88g.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
