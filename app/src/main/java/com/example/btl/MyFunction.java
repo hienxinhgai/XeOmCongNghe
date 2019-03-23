@@ -4,6 +4,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class MyFunction {
 
+    public static LatLng myLocation;
     public static double khoagCach(LatLng start, LatLng end){
         double la1=start.latitude, lo1=start.longitude;
         double la2=end.latitude, lo2=end.longitude;

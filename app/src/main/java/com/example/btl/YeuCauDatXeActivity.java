@@ -33,14 +33,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.btl.MyFunction.myLocation;
+
 public class YeuCauDatXeActivity extends AppCompatActivity {
     private ListView lvYeuCauDatXe;
     private DatabaseReference database;
     private List<DatXe> list;
     private List<String>listView;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
-    private LatLng myLocation;
 
     void Toasts(String s){
         Toast.makeText(YeuCauDatXeActivity.this,s,Toast.LENGTH_LONG).show();
@@ -51,53 +50,6 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_yeu_cau_dat_xe);
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        //kiem tra bat gps chua
-        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            Toasts("chưa bật gps");
-            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-        }
-
-//        Toasts("Khoi tao" + GPS.getLatitude() + " " + GPS.getLongitude());
-
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                //luu vi tri hien tai vao GPS
-                //luu vi tri vao firebase database
-                myLocation = new LatLng(location.getLatitude(),location.getLongitude());
-//                Toasts(GPS.getLatitude() + " " + GPS.getLongitude());
-
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-                // Call your Alert message
-                Toasts("chưa bật gps");
-                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-            }
-        };
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(YeuCauDatXeActivity.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
-
-            return;
-        }
-
-        //goi den ham onLocationChanged o tren
-        locationManager.requestLocationUpdates("gps", 1000, 1, locationListener);
         database = FirebaseDatabase.getInstance().getReference();
         lvYeuCauDatXe= (ListView)findViewById(R.id.lvYeuCauDatXe);
 
@@ -111,10 +63,7 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
                     if(d.check==true){
                         list.add(d);
                         LatLng l = new LatLng(d.lat,d.lng);
-                        if(myLocation!=null)
-                            listView.add("vị trí cách bạn " + MyFunction.khoagCach(l,myLocation) + " km");
-                        else
-                            listView.add("vị trí đang cập nhật");
+                        listView.add("vị trí cách bạn " + MyFunction.khoagCach(l,myLocation) + " km");
                     }
                 }
 
@@ -141,12 +90,10 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         LatLng location = new LatLng(dataSnapshot.child("latitude").getValue(double.class),dataSnapshot.child("longitude").getValue(double.class));
-                        String message= "SĐT khách: " + d.SDT + "\nVi trí khách cách bạn: " ;
-                        if(myLocation!=null){
-                            message += MyFunction.khoagCach(myLocation,location) + " km";
-                        }
-                        message += "\nQuãng đường: " + d.khoangCach;
-                        message += "\nTổng tiền: " + d.chiPhi + "\n";
+                        String message= "SĐT khách: " + d.SDT + "\nVi trí khách cách bạn: "
+                                + MyFunction.khoagCach(myLocation,location) + " km"
+                                + "\nQuãng đường: " + d.khoangCach
+                                + "\nTổng tiền: " + d.chiPhi + "\n";
 
 
                         new AlertDialog.Builder(YeuCauDatXeActivity.this)

@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.provider.Settings;
@@ -17,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     Button btnDangKy, btnDangNhap;
     EditText edtSDT,edtMK;
     DatabaseReference database;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+
 
     private void Toasts(String s){
          Toast.makeText(MainActivity.this,s,Toast.LENGTH_SHORT).show();
@@ -44,9 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     private  boolean isGPSEnable(){
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-//            Toasts("chưa bật gps");
-//            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) &&
+                !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             return false;
         }
         return true;
@@ -68,6 +73,44 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
         }
 
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        //kiem tra bat gps chua
+        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            Toasts("chưa bật gps");
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
+
+
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                if(MyFunction.myLocation==null)
+                    Toasts("Lấy vị trí thành công");
+                MyFunction.myLocation=new LatLng(location.getLatitude(),location.getLongitude());
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                // Call your Alert message
+                Toasts("chưa bật gps");
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        };
+
+        //sau 1 giay update vi tri mot lan
+        //goi den ham onLocationChanged o tren
+        locationManager.requestLocationUpdates("gps", 1000, 1, locationListener);
 
 
         btnDangKy =   (Button) findViewById(R.id.btndk);
@@ -88,6 +131,10 @@ public class MainActivity extends AppCompatActivity {
         btnDangNhap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(MyFunction.myLocation==null){
+                    Toasts("Đang lấy vị trí, vui lòng thử lại");
+                    return;
+                }
                database.child("users").child(edtSDT.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
                    @Override
                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

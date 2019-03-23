@@ -54,6 +54,7 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nguoi_dung);
+        GPS=MyFunction.myLocation;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(NguoiDungActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
@@ -196,10 +197,6 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(home,17));
 
         //di chuyen camera den vi tri hien tai
-        Location l = locationManager.getLastKnownLocation("gps");
-        if(l!=null)
-            GPS = new LatLng(l.getLatitude(),l.getLongitude());
-
         if(GPS!=null){
             database.child("GPS_NguoiDung").child(SDT).setValue(new LatLng(GPS.latitude,GPS.longitude));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(GPS.latitude,GPS.longitude),17));
