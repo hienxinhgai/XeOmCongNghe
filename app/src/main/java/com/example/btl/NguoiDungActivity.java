@@ -232,21 +232,11 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.itemDangXuat:
-                //ham finish de dong activity
-                // the h xuống đây goi hàm kia la dk á
-                // nó gọi tự động
-                //muốn đóng mình chỉ cần finish là được rồi
-                // k đúng nó phải ra cái khac chư
-                //vi đóng activityDoiMK c khong finish mà gọi intent
-                //nên khi đóng nó lại quay lại
                 finish();
                 return true;
-                //hieu roi
-                //switch case khong break no chay tiep cai duoi ok
             case R.id.itemDoiMatKhau:
                 Intent inten1 = new Intent(NguoiDungActivity.this,DoiMatKhauActivity.class);
-                inten1.putExtra("SDT",SDT); // roi sao nua
-                //putExtra de gui du lieu qua activity khac
+                inten1.putExtra("SDT",SDT);
                 startActivity(inten1);
                 return true;
             default:

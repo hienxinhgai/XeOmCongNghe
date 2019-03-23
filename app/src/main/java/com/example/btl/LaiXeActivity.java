@@ -36,6 +36,10 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
     private DatabaseReference database;
     private Button btnGetLocationCustom;
     private String SDTKhach;
+    private String SDT;
+    //moi khai bao da gan no dau
+    // ho a???? ok để t gán
+
 
     private void Toasts(String s) {
         Toast.makeText(LaiXeActivity.this, s, Toast.LENGTH_SHORT).show();
@@ -49,6 +53,7 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
         btnGetLocationCustom = (Button) findViewById(R.id.btnGetLocationCustom);
 
         database = FirebaseDatabase.getInstance().getReference();
+        SDT = getIntent().getStringExtra("SDT");
 
         database.child("yeuCauDatXe").addValueEventListener(new ValueEventListener() {
             @Override
@@ -121,7 +126,8 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
         getMenuInflater().inflate(R.menu.menu_lai_xe,menu);
         return super.onCreateOptionsMenu(menu);
     }
-
+//NullPointerException là có 1 biến bị null nhưng vẫn dùng
+    //nó bảo trong cái chide null
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -130,7 +136,14 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
                 startActivityForResult(intent,1);
                 return true;
             case R.id.itemLogout:
-                onDestroy();
+               finish();
+                return true;
+            case R.id.itemDoiMatKhau:
+                Intent inten = new Intent(LaiXeActivity.this,DoiMatKhauActivity.class);
+                inten.putExtra("SDT",SDT);
+                //put null vao nay
+                // ma sao lại là null nhỉ
+                startActivity(inten);
                 return true;
             case R.id.itemCallClient:
                 if (ContextCompat.checkSelfPermission(LaiXeActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {

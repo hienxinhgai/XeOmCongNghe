@@ -27,6 +27,8 @@ public class DoiMatKhauActivity extends AppCompatActivity {
         setContentView(R.layout.activity_doi_mat_khau2);
 
         //lay du lieu putExtra ben kia nhu nay
+        //da putextra chua
+        // hinh nhu chua vay put di
         SDT = getIntent().getStringExtra("SDT");
         btnDoiMatKhau = (Button) findViewById(R.id.btnDoiMatKhau);
         edtMatKhau = (EditText) findViewById(R.id.edtMatKhau);
@@ -41,6 +43,8 @@ public class DoiMatKhauActivity extends AppCompatActivity {
                 // h thì nó k chạy luôn
                 //lay 1 lan dung single
                 //user viet thuong ok
+                //sdt null day nay
+                //sao lai la null nhi
                 database.child("users").child(SDT).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {//bao lay edtitext la phai .getText.tostring mà ok rồi đấy
