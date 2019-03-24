@@ -80,7 +80,7 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
                 //luu vi tri vao firebase database
                 GPS=new LatLng(location.getLatitude(),location.getLongitude());
 //                Toasts(GPS.getLatitude() + " " + GPS.getLongitude());
-                database.child("GPS_NguoiDung").child(SDT).setValue(new LatLng(GPS.latitude,GPS.longitude));
+                database.child("GPS_NguoiDung").child(SDT).setValue(GPS);
             }
 
             @Override
@@ -114,14 +114,19 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
         btnCallDriver.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if(btnCallDriver.getText().toString().equals("HỦY CHUYẾN")){
+                database.child("yeuCauDatXe").child(SDT).child("check").setValue(false);
+                btnCallDriver.setText("ĐẶT XE");
+                database.child("yeuCauDatXe").child(SDT).child("check").removeEventListener(valueListenerCheck);
+                Toasts("Hủy chuyến thành công");
+                return;
+            }
+
             if(DiemDen==null){
                 Toasts("click vào bản đồ đề chọn điểm cần đến");
                 return;
             }
-            if(GPS==null){
-                Toasts("Chưa lấy được vị trí, xin vui lòng thử lại");
-                return;
-            }
+
 
             final DatXe datxe = new DatXe();
             datxe.SDT = SDT;
@@ -142,25 +147,15 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
                         public void onClick(DialogInterface dialog, int which) {
                             database.child("yeuCauDatXe").child(SDT).setValue(datxe);
                             Toasts("Đã đặt xe, dang tìm tài xế");
-                            database.child("yeuCauDatXe").child(datxe.SDT).child("check").addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if(dataSnapshot.getValue().toString().equals("false"))
-                                            Toasts("Đặt xe thành công");
-                                    }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
+                            database.child("yeuCauDatXe").child(SDT).child("check").addValueEventListener(valueListenerCheck);
+                            btnCallDriver.setText("HỦY CHUYẾN");
                         }
                     })
                     .setNegativeButton("Hủy",null)
                     .show();
 
 
-        }
+             }
     });
 
     // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -168,8 +163,28 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
             .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-}
+    }
 
+    //nhan thong bao dat xe thanh cong
+    ValueEventListener valueListenerCheck =  new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            if(dataSnapshot.getValue().toString().equals("false")){
+                btnCallDriver.setText("ĐẶT XE");
+                new AlertDialog.Builder(NguoiDungActivity.this)
+                        .setTitle("Đặt xe thành công")
+                        .setMessage("Vui lòng chờ trong giây lát\nTài xế sẽ liên lạc lại với bạn")
+                        .setNegativeButton("OK",null)
+                        .show();
+                database.child("yeuCauDatXe").child(SDT).child("check").removeEventListener(this);
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
 
     /**
      * Manipulates the map once available.
@@ -188,18 +203,16 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
         }
         mMap.setMyLocationEnabled(true);
-        LatLng home = new LatLng(21.231693, 105.791249);
-        googleMap.addMarker(new MarkerOptions()
-                .position(home)
-                .title("Nhà tín"));
+//        LatLng home = new LatLng(21.231693, 105.791249);
+//        googleMap.addMarker(new MarkerOptions()
+//                .position(home)
+//                .title("Nhà tín"));
 
 //        LatLng locationcurent = new LatLng(GPS.getLatitude(),GPS.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(home,17));
-
         //di chuyen camera den vi tri hien tai
         if(GPS!=null){
-            database.child("GPS_NguoiDung").child(SDT).setValue(new LatLng(GPS.latitude,GPS.longitude));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(GPS.latitude,GPS.longitude),17));
+            database.child("GPS_NguoiDung").child(SDT).setValue(GPS);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(GPS,17));
         }
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {

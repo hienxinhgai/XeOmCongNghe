@@ -1,12 +1,16 @@
 package com.example.btl;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,17 +35,28 @@ public class dangky extends AppCompatActivity {
     String authCode;
     PhoneAuthProvider.ForceResendingToken token ;
     FirebaseAuth mAuth;
-
     DatabaseReference database;
 
     private void Toasts(String s){
         Toast.makeText(dangky.this,s,Toast.LENGTH_LONG).show();
     }
 
+    //khi nhan duoc tin nhan ma xac nhan gui ve se tu dong dien ma xac nhan vao
+    public static dangky DangKyActivity;
+    public void SetAuthCode(final String s){
+        DangKyActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                edtAuthCode.setText(s);
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dangky);
+
+        DangKyActivity=this;
         ckbLaiXe = findViewById(R.id.ckbxLaiXe);
         btnDangKy = (Button) findViewById(R.id.button);
         edtHoTen = (EditText)findViewById(R.id.edtHoTen);
@@ -52,6 +67,11 @@ public class dangky extends AppCompatActivity {
         edtAuthCode = (EditText)findViewById(R.id.edtAuthCode);
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance().getReference();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(dangky.this,
+                    new String[]{Manifest.permission.RECEIVE_SMS},2);
+        }
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 

@@ -88,11 +88,8 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
             return;
         }
         mMap.setMyLocationEnabled(true);
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MyFunction.myLocation,17));
         //click lay vi tri khach
         btnGetLocationCustom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,7 +105,7 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
                         mMap.clear();
                         LatLng location = new LatLng(dataSnapshot.child("latitude").getValue(double.class),dataSnapshot.child("longitude").getValue(double.class));
                         mMap.addMarker(new MarkerOptions().position(location).title("khách"));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,15));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,17));
                     }
 
                     @Override

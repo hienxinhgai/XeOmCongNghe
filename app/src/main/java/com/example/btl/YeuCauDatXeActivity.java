@@ -90,8 +90,7 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         LatLng location = new LatLng(dataSnapshot.child("latitude").getValue(double.class),dataSnapshot.child("longitude").getValue(double.class));
-                        String message= "SĐT khách: " + d.SDT + "\nVi trí khách cách bạn: "
-                                + MyFunction.khoagCach(myLocation,location) + " km"
+                        String message= "Vị trí khách cách bạn: " + MyFunction.khoagCach(myLocation,location) + " km"
                                 + "\nQuãng đường: " + d.khoangCach
                                 + "\nTổng tiền: " + d.chiPhi + "\n";
 
