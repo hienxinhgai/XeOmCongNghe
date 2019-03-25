@@ -235,6 +235,7 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
         //tat update vi tri
         Toasts("Đăng xuất thành công");
         locationManager.removeUpdates(locationListener);
+        database.child("yeuCauDatXe").child(SDT).child("check").removeEventListener(valueListenerCheck);
         locationManager=null;
     }
     @Override
