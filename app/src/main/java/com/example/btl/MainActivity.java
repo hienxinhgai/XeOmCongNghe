@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.database.sqlite.*;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference database;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    
+    private DBHelper SQLite;
+
     private void Toasts(String s) {
         Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
     }
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
@@ -98,12 +102,53 @@ public class MainActivity extends AppCompatActivity {
             MyFunction.myLocation = new LatLng(location.getLatitude(),location.getLongitude());
             Toasts("Lấy vị trí thành công");
         }
+
+        SQLite = new DBHelper(MainActivity.this,"database",null,1);
+        SQLite.truyVan("CREATE TABLE IF NOT EXISTS user (SDT varchar(10), pass varchar(30))");
+
+
         btnDangKy =   (Button) findViewById(R.id.btndk);
         btnDangNhap = (Button) findViewById(R.id.btndn );
         edtSDT = (EditText) findViewById(R.id.edtsdt) ;
         edtMK = (EditText) findViewById(R.id.edtmk);
 
         database = FirebaseDatabase.getInstance().getReference();
+        Cursor c =  SQLite.select("Select * from user");
+        if( c.moveToNext()){
+                final User u1 = new User();
+                u1.SDT = c.getString(0);
+                u1.password = c.getString(1);
+                if(MyFunction.myLocation==null){
+                    Toasts("Đang lấy vị trí, vui lòng thử lại");
+                    return;
+                }
+            database.child("users").child(u1.SDT).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User u = dataSnapshot.getValue(User.class);
+                    if(u!=null && u.password!=null && u.password.equals(u1.password)){
+//                           SQLite.truyVan("Insert into user values ('"+u.SDT+"','"+u.password+"')");
+                        Intent intent;
+                        if(u.LaiXe==true){
+                            intent = new Intent(MainActivity.this,LaiXeActivity.class);
+                        }
+                        else{
+                            intent = new Intent(MainActivity.this,NguoiDungActivity.class);
+                        }
+                        intent.putExtra("SDT",u.SDT);
+                        startActivity(intent);
+                    }
+                    else{
+                        Toasts("Sai mật khẩu");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
 
         btnDangKy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnDangNhap.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
                 if(MyFunction.myLocation==null){
@@ -125,6 +172,9 @@ public class MainActivity extends AppCompatActivity {
                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                        User u = dataSnapshot.getValue(User.class);
                        if(u!=null && u.password!=null && u.password.equals(edtMK.getText().toString())){
+//                           SQLite.truyVan("Insert into user values ('"+u.SDT+"','"+u.password+"')");
+                           SQLite.truyVan("delete from user;");
+                           SQLite.truyVan(String.format("insert into user values('%s','%s');",u.SDT,u.password));
                            Intent intent;
                            if(u.LaiXe==true){
                                intent = new Intent(MainActivity.this,LaiXeActivity.class);
