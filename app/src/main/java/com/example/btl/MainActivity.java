@@ -32,29 +32,19 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     Button btnDangKy, btnDangNhap;
-    EditText edtSDT,edtMK;
+    EditText edtSDT, edtMK;
     DatabaseReference database;
     private LocationManager locationManager;
     private LocationListener locationListener;
-
-
-    private void Toasts(String s){
-         Toast.makeText(MainActivity.this,s,Toast.LENGTH_SHORT).show();
-     }
+    
+    private void Toasts(String s) {
+        Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
+    }
 
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         return cm.getActiveNetworkInfo() != null;
-    }
-
-    private  boolean isGPSEnable(){
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) &&
-                !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            return false;
-        }
-        return true;
     }
 
     @Override
@@ -68,18 +58,8 @@ public class MainActivity extends AppCompatActivity {
         if(!isNetworkConnected()){
             Toasts("Chưa kết nối internet");
         }
-        if(!isGPSEnable()){
-            Toasts("Chưa bật gps");
-            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-        }
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        //kiem tra bat gps chua
-        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            Toasts("chưa bật gps");
-            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-        }
-
 
         locationListener = new LocationListener() {
             @Override
@@ -108,11 +88,16 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        //sau 1 giay update vi tri mot lan
+        //sau 0.1 giay update vi tri mot lan
         //goi den ham onLocationChanged o tren
-        locationManager.requestLocationUpdates("gps", 1000, 1, locationListener);
+        locationManager.requestLocationUpdates("gps", 100, 1, locationListener);
 
-
+        //lay vi tri cuoi cung
+        Location location = locationManager.getLastKnownLocation("gps");
+        if(location!=null){
+            MyFunction.myLocation = new LatLng(location.getLatitude(),location.getLongitude());
+            Toasts("Lấy vị trí thành công");
+        }
         btnDangKy =   (Button) findViewById(R.id.btndk);
         btnDangNhap = (Button) findViewById(R.id.btndn );
         edtSDT = (EditText) findViewById(R.id.edtsdt) ;
