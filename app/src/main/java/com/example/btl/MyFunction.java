@@ -1,6 +1,15 @@
 package com.example.btl;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+
 import com.google.android.gms.maps.model.LatLng;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MyFunction {
 
@@ -27,5 +36,25 @@ public class MyFunction {
         return gia;
     }
 
+    public static ArrayList<String> getAdress(Context context, LatLng location) throws IOException {
+        ArrayList<String> a= new ArrayList<String>();
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        List<Address> listAdress = geocoder.getFromLocation(location.latitude, location.longitude, 1);
+        for(int i=0; i<listAdress.size(); i++){
+            String s = "";
+            if (listAdress.get(i).getThoroughfare() != null)
+                s += listAdress.get(i).getThoroughfare() + " - ";
+//                            if(listAdress.get(0).getFeatureName()!=null)
+//                                s+=listAdress.get(0).getFeatureName() + " ";
+            if (listAdress.get(i).getSubAdminArea() != null)
+                s += listAdress.get(i).getSubAdminArea() + " - ";
+            if (listAdress.get(i).getLocality() != null)
+                s += listAdress.get(i).getLocality() + " ";
+//                            if(listAdress.get(0).getSubLocality()!=null)
+//                                s+=listAdress.get(0).getSubLocality() + " ";
+            a.add(s);
+        }
+        return a;
+    }
 }
 

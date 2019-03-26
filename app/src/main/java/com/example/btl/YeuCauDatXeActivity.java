@@ -91,8 +91,9 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         LatLng location = new LatLng(dataSnapshot.child("latitude").getValue(double.class),dataSnapshot.child("longitude").getValue(double.class));
                         String message= "Vị trí khách cách bạn: " + MyFunction.khoagCach(myLocation,location) + " km"
-                                + "\nQuãng đường: " + d.khoangCach
-                                + "\nTổng tiền: " + d.chiPhi + "\n";
+                                +"\nĐiểm đến: " + d.viTriDich
+                                + "\nQuãng đường: " + d.khoangCach + " km"
+                                + "\nTổng tiền: " + d.chiPhi + " đồng\n";
 
 
                         new AlertDialog.Builder(YeuCauDatXeActivity.this)
