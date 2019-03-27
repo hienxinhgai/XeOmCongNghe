@@ -37,13 +37,13 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
     private Button btnGetLocationCustom;
     private String SDTKhach;
     private String SDT;
-    //moi khai bao da gan no dau
-    // ho a???? ok để t gán
+    private DBHelper sqlite;
 
 
     private void Toasts(String s) {
         Toast.makeText(LaiXeActivity.this, s, Toast.LENGTH_SHORT).show();
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +51,7 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
         setContentView(R.layout.activity_lai_xe);
 
         btnGetLocationCustom = (Button) findViewById(R.id.btnGetLocationCustom);
+        sqlite = new DBHelper(LaiXeActivity.this,"database",null,1);
 
         database = FirebaseDatabase.getInstance().getReference();
         SDT = getIntent().getStringExtra("SDT");
@@ -76,6 +77,7 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
                 .findFragmentById(R.id.mapDriver);
         mapFragment.getMapAsync(this);
     }
+
 
 
     @Override
@@ -118,6 +120,7 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
         });
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_lai_xe,menu);
@@ -133,6 +136,7 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
                 startActivityForResult(intent,1);
                 return true;
             case R.id.itemLogout:
+                sqlite.truyVan("delete from user");
                finish();
                 return true;
             case R.id.itemDoiMatKhau:

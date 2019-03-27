@@ -54,6 +54,7 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
     private Button btnCallDriver;
     private LatLng DiemDen;
     private EditText edtDiemDen;
+    private DBHelper sqlite;
 
     private void Toasts(String s) {
         Toast.makeText(NguoiDungActivity.this, s, Toast.LENGTH_SHORT).show();
@@ -73,6 +74,7 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
         edtDiemDen = (EditText) findViewById(R.id.edtDiemDen);
         database = FirebaseDatabase.getInstance().getReference();
         SDT = getIntent().getStringExtra("SDT");
+        sqlite = new DBHelper(NguoiDungActivity.this,"database",null,1);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         //kiem tra bat gps chua
@@ -253,6 +255,7 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.itemDangXuat:
+                sqlite.truyVan("delete from user");
                 finish();
                 return true;
             case R.id.itemDoiMatKhau:
