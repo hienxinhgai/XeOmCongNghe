@@ -70,7 +70,7 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         btnCallDriver = (Button) findViewById(R.id.btnCallDriver);
-        edtDiemDen = (EditText) findViewById(R.id.edtDiaDiem);
+        edtDiemDen = (EditText) findViewById(R.id.edtDiemDen);
         database = FirebaseDatabase.getInstance().getReference();
         SDT = getIntent().getStringExtra("SDT");
 
