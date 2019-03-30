@@ -13,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -127,9 +129,9 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
         @Override
         public void onClick(View v) {
             if(btnCallDriver.getText().toString().equals("HỦY CHUYẾN")){
-                database.child("yeuCauDatXe").child(SDT).child("check").setValue(false);
+                database.child("yeuCauDatXe").child(SDT).removeEventListener(childListener);
+                database.child("yeuCauDatXe").child(SDT).removeValue();
                 btnCallDriver.setText("ĐẶT XE");
-                database.child("yeuCauDatXe").child(SDT).child("check").removeEventListener(valueListenerCheck);
                 Toasts("Hủy chuyến thành công");
                 return;
             }
@@ -146,7 +148,6 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
             datxe.chiPhi = MyFunction.chiPhi(GPS,DiemDen);
             datxe.lat = GPS.latitude;
             datxe.lng = GPS.longitude;
-            datxe.check=true;
             datxe.viTriDich = edtDiemDen.getText().toString();
 
             String message="Điểm đến: " + edtDiemDen.getText().toString()
@@ -161,14 +162,12 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
                         public void onClick(DialogInterface dialog, int which) {
                             database.child("yeuCauDatXe").child(SDT).setValue(datxe);
                             Toasts("Đã đặt xe, dang tìm tài xế");
-                            database.child("yeuCauDatXe").child(SDT).child("check").addValueEventListener(valueListenerCheck);
+                            database.child("yeuCauDatXe").child(SDT).addChildEventListener(childListener);
                             btnCallDriver.setText("HỦY CHUYẾN");
                         }
                     })
                     .setNegativeButton("Hủy",null)
                     .show();
-
-
              }
     });
 
@@ -180,18 +179,37 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     //nhan thong bao dat xe thanh cong
-    ValueEventListener valueListenerCheck =  new ValueEventListener() {
+    ChildEventListener childListener =  new ChildEventListener() {
+
+
         @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            if(dataSnapshot.getValue().toString().equals("false")){
-                btnCallDriver.setText("ĐẶT XE");
-                new AlertDialog.Builder(NguoiDungActivity.this)
-                        .setTitle("Đặt xe thành công")
-                        .setMessage("Vui lòng chờ trong giây lát\nTài xế sẽ liên lạc lại với bạn")
-                        .setNegativeButton("OK",null)
-                        .show();
-                database.child("yeuCauDatXe").child(SDT).child("check").removeEventListener(this);
-            }
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            Log.e("key",dataSnapshot.getKey().toString());
+            Log.e("value",dataSnapshot.getValue().toString());
+            if(!dataSnapshot.getValue().toString().equals(SDT))
+                return;
+            btnCallDriver.setText("ĐẶT XE");
+            new AlertDialog.Builder(NguoiDungActivity.this)
+                    .setTitle("Đặt xe thành công")
+                    .setMessage("Vui lòng chờ trong giây lát\nTài xế sẽ liên lạc lại với bạn")
+                    .setNegativeButton("OK",null)
+                    .show();
+            database.child("yeuCauDatXe").child(SDT).removeEventListener(this);
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
         }
 
         @Override
@@ -238,13 +256,9 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        //neu activity dong no goi den ham destroy
-        // la sao
-        //mở activity nó chạy hàm oncreat, đóng activity nó chạy hàm ondestroy
-        //tat update vi tri
         Toasts("Đăng xuất thành công");
         locationManager.removeUpdates(locationListener);
-        database.child("yeuCauDatXe").child(SDT).child("check").removeEventListener(valueListenerCheck);
+        database.child("yeuCauDatXe").child(SDT).removeEventListener(childListener);
         locationManager=null;
     }
     @Override

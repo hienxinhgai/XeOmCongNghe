@@ -104,7 +104,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         SQLite = new DBHelper(MainActivity.this,"database",null,1);
-        SQLite.truyVan("CREATE TABLE IF NOT EXISTS user (SDT varchar(10), pass varchar(30))");
+//        SQLite.truyVan("drop table if exists user");
+        SQLite.truyVan("CREATE TABLE IF NOT EXISTS user (SDT varchar(10), pass varchar(30), laixe varchar(4))");
 
 
         btnDangKy =   (Button) findViewById(R.id.btndk);
@@ -115,39 +116,25 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance().getReference();
         Cursor c =  SQLite.select("Select * from user");
         if( c.moveToNext()){
-                final User u1 = new User();
-                u1.SDT = c.getString(0);
-                u1.password = c.getString(1);
+                User u = new User();
+                u.SDT = c.getString(0);
+                u.password = c.getString(1);
+                u.LaiXe = Boolean.parseBoolean(c.getString(2));
                 if(MyFunction.myLocation==null){
-                    Toasts("Đang lấy vị trí, vui lòng thử lại");
+                    Toasts("Đang lấy vị trí");
                     return;
                 }
-            database.child("users").child(u1.SDT).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    User u = dataSnapshot.getValue(User.class);
-                    if(u!=null && u.password!=null && u.password.equals(u1.password)){
-//                           SQLite.truyVan("Insert into user values ('"+u.SDT+"','"+u.password+"')");
-                        Intent intent;
-                        if(u.LaiXe==true){
-                            intent = new Intent(MainActivity.this,LaiXeActivity.class);
-                        }
-                        else{
-                            intent = new Intent(MainActivity.this,NguoiDungActivity.class);
-                        }
-                        intent.putExtra("SDT",u.SDT);
-                        startActivity(intent);
-                    }
-                    else{
-                        Toasts("Sai mật khẩu");
-                    }
+                if(u.LaiXe){
+                    Intent intent = new Intent(MainActivity.this,LaiXeActivity.class);
+                    intent.putExtra("SDT",u.SDT);
+                    startActivity(intent);
+                }
+                else{
+                    Intent intent = new Intent(MainActivity.this,NguoiDungActivity.class);
+                    intent.putExtra("SDT",u.SDT);
+                    startActivity(intent);
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
         }
 
         btnDangKy.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                        if(u!=null && u.password!=null && u.password.equals(edtMK.getText().toString())){
 //                           SQLite.truyVan("Insert into user values ('"+u.SDT+"','"+u.password+"')");
                            SQLite.truyVan("delete from user;");
-                           SQLite.truyVan(String.format("insert into user values('%s','%s');",u.SDT,u.password));
+                           SQLite.truyVan(String.format("insert into user values('%s','%s','%s');",u.SDT,u.password,u.LaiXe));
                            Intent intent;
                            if(u.LaiXe==true){
                                intent = new Intent(MainActivity.this,LaiXeActivity.class);

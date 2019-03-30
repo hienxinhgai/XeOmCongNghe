@@ -13,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,6 +47,31 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
         Toast.makeText(YeuCauDatXeActivity.this,s,Toast.LENGTH_LONG).show();
     }
 
+    void capNhatDanhSach(){
+        database.child("yeuCauDatXe").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                list = new ArrayList<DatXe>();
+                listView = new ArrayList<String>();
+                for(DataSnapshot dts : dataSnapshot.getChildren()){
+                    DatXe d = dts.getValue(DatXe.class);
+                    list.add(d);
+                    LatLng l = new LatLng(d.lat,d.lng);
+                    listView.add("vị trí cách bạn " + MyFunction.khoagCach(l,myLocation) + " km");
+                }
+
+                ArrayAdapter<String> arrayAdapter
+                        = new ArrayAdapter<String>(YeuCauDatXeActivity.this, android.R.layout.simple_list_item_1 ,listView);
+                lvYeuCauDatXe.setAdapter(arrayAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,24 +80,24 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance().getReference();
         lvYeuCauDatXe= (ListView)findViewById(R.id.lvYeuCauDatXe);
 
-        database.child("yeuCauDatXe").addValueEventListener(new ValueEventListener() {
+        database.child("yeuCauDatXe").addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                list = new ArrayList<DatXe>();
-                listView = new ArrayList<String>();
-                for(DataSnapshot dts : dataSnapshot.getChildren()){
-                    DatXe d = dts.getValue(DatXe.class);
-                    if(d.check==true){
-                        list.add(d);
-                        LatLng l = new LatLng(d.lat,d.lng);
-                        listView.add("vị trí cách bạn " + MyFunction.khoagCach(l,myLocation) + " km");
-                    }
-                }
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                capNhatDanhSach();
+            }
 
-                ArrayAdapter<String> arrayAdapter
-                        = new ArrayAdapter<String>(YeuCauDatXeActivity.this, android.R.layout.simple_list_item_1 ,listView);
-                lvYeuCauDatXe.setAdapter(arrayAdapter);
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                capNhatDanhSach();
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
             }
 
@@ -79,8 +106,6 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
 
             }
         });
-
-
 
         lvYeuCauDatXe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -95,7 +120,6 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
                                 + "\nQuãng đường: " + d.khoangCach + " km"
                                 + "\nTổng tiền: " + d.chiPhi + " đồng\n";
 
-
                         new AlertDialog.Builder(YeuCauDatXeActivity.this)
                                 .setTitle("Thông tin chuyến")
                                 .setMessage(message)
@@ -106,7 +130,7 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
                                         intent.putExtra("SDTKhach",d.SDT);
                                         setResult(Activity.RESULT_OK,intent);
                                         Toasts("nhận chuyến từ " + d.SDT);
-                                        database.child("yeuCauDatXe").child(d.SDT).child("check").setValue(false);
+                                        database.child("yeuCauDatXe").child(d.SDT).removeValue();
                                         finish();
                                     }
                                 })
@@ -119,14 +143,6 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
 
                     }
                 });
-
-
-
-
-
-//                startActivity(intent);
-
-//                finish();
             }
         });
     }

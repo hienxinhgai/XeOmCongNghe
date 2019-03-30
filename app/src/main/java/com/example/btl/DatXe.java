@@ -8,7 +8,6 @@ public class DatXe {
     public String SDT;
     public double khoangCach;
     public int chiPhi;
-    public boolean check;
     public double lat;
     public double lng;
     public String viTriKhach;
@@ -21,7 +20,6 @@ public class DatXe {
         SDT=s;
         khoangCach=k;
         chiPhi=c;
-        check=ck;
         lat=la;
         lng=lo;
         viTriKhach=v;
