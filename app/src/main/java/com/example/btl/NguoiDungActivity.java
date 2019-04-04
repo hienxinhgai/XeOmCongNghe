@@ -11,6 +11,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -199,6 +200,12 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
             if(!dataSnapshot.getValue().toString().equals(SDT))
                 return;
             btnCallDriver.setText("ĐẶT XE");
+
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibrator.hasVibrator()) {
+                vibrator.vibrate(500); // for 500 ms
+            }
+
             new AlertDialog.Builder(NguoiDungActivity.this)
                     .setTitle("Đặt xe thành công")
                     .setMessage("Vui lòng chờ trong giây lát\nTài xế sẽ liên lạc lại với bạn")

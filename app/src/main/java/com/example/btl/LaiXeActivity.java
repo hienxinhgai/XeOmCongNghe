@@ -2,9 +2,11 @@ package com.example.btl;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -24,6 +26,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -72,6 +75,37 @@ public class LaiXeActivity extends AppCompatActivity implements OnMapReadyCallba
             }
         });
 
+       database.child("yeuCauDatXe").addChildEventListener(new ChildEventListener() {
+           @Override
+           public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+               Toasts("Vừa có người đặt xe");
+               Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+               if (vibrator.hasVibrator()) {
+                   vibrator.vibrate(500); // for 500 ms
+               }
+
+           }
+
+           @Override
+           public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+           }
+
+           @Override
+           public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+           }
+
+           @Override
+           public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError databaseError) {
+
+           }
+       });
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapDriver);
