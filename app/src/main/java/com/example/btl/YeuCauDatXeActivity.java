@@ -40,8 +40,7 @@ import static com.example.btl.MyFunction.myLocation;
 public class YeuCauDatXeActivity extends AppCompatActivity {
     private ListView lvYeuCauDatXe;
     private DatabaseReference database;
-    private List<DatXe> list;
-    private List<String>listView;
+    private ArrayList<DatXe> list;
 
     void Toasts(String s){
         Toast.makeText(YeuCauDatXeActivity.this,s,Toast.LENGTH_LONG).show();
@@ -52,17 +51,15 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 list = new ArrayList<DatXe>();
-                listView = new ArrayList<String>();
                 for(DataSnapshot dts : dataSnapshot.getChildren()){
                     DatXe d = dts.getValue(DatXe.class);
                     list.add(d);
                     LatLng l = new LatLng(d.lat,d.lng);
-                    listView.add("vị trí cách bạn " + MyFunction.khoagCach(l,myLocation) + " km");
                 }
 
-                ArrayAdapter<String> arrayAdapter
-                        = new ArrayAdapter<String>(YeuCauDatXeActivity.this, android.R.layout.simple_list_item_1 ,listView);
-                lvYeuCauDatXe.setAdapter(arrayAdapter);
+                AdapterYeuCauDatXe adapterYeuCauDatXe
+                        = new AdapterYeuCauDatXe(YeuCauDatXeActivity.this, R.layout.item_yeucaudatxe ,list);
+                lvYeuCauDatXe.setAdapter(adapterYeuCauDatXe);
             }
 
             @Override
