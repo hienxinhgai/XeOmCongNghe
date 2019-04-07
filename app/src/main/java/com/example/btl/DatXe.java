@@ -12,11 +12,12 @@ public class DatXe {
     public double lng;
     public String viTriKhach;
     public String viTriDich;
+    public String ghiChu;
 
     public DatXe(){
 
     }
-    public DatXe(String s,double k,int c, boolean ck, double la,double lo, String v, String vd){
+    public DatXe(String s,double k,int c, boolean ck, double la,double lo, String v, String vd, String g){
         SDT=s;
         khoangCach=k;
         chiPhi=c;
@@ -24,6 +25,7 @@ public class DatXe {
         lng=lo;
         viTriKhach=v;
         viTriDich=vd;
+        ghiChu=g;
     }
 }
 

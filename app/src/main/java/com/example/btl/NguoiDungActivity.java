@@ -151,24 +151,36 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
             datxe.lng = GPS.longitude;
             datxe.viTriDich = edtDiemDen.getText().toString();
 
-            String message="Điểm đến: " + edtDiemDen.getText().toString()
-                    +"\nKhoảng cách: " + datxe.khoangCach + " km"
-                    +"\nGiá cả: 10 000đ/1km đầu"
-                    + "\nChi phí: " + datxe.chiPhi + " đồng";
-            new AlertDialog.Builder(NguoiDungActivity.this)
-                    .setTitle("Thông tin đặt xe")
-                    .setMessage(message)
-                    .setPositiveButton("Đặt", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            database.child("yeuCauDatXe").child(SDT).setValue(datxe);
-                            Toasts("Đã đặt xe, dang tìm tài xế");
-                            database.child("yeuCauDatXe").child(SDT).addChildEventListener(childListener);
-                            btnCallDriver.setText("HỦY CHUYẾN");
-                        }
-                    })
-                    .setNegativeButton("Hủy",null)
-                    .show();
+            //class CustonDialog
+            CustomDialog dialog = new CustomDialog(NguoiDungActivity.this, datxe, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    datxe.ghiChu = CustomDialog.edtGhiChu.getText().toString();
+                    database.child("yeuCauDatXe").child(SDT).setValue(datxe);
+                    Toasts("Đã đặt xe, dang tìm tài xế");
+                    database.child("yeuCauDatXe").child(SDT).addChildEventListener(childListener);
+                    btnCallDriver.setText("HỦY CHUYẾN");
+                }
+            });
+            dialog.show();
+//            String message="Điểm đến: " + edtDiemDen.getText().toString()
+//                    +"\nKhoảng cách: " + datxe.khoangCach + " km"
+//                    +"\nGiá cả: 10 000đ/1km đầu"
+//                    + "\nChi phí: " + datxe.chiPhi + " đồng";
+//            new AlertDialog.Builder(NguoiDungActivity.this)
+//                    .setTitle("Thông tin đặt xe")
+//                    .setMessage(message)
+//                    .setPositiveButton("Đặt", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            database.child("yeuCauDatXe").child(SDT).setValue(datxe);
+//                            Toasts("Đã đặt xe, dang tìm tài xế");
+//                            database.child("yeuCauDatXe").child(SDT).addChildEventListener(childListener);
+//                            btnCallDriver.setText("HỦY CHUYẾN");
+//                        }
+//                    })
+//                    .setNegativeButton("Hủy",null)
+//                    .show();
              }
     });
 

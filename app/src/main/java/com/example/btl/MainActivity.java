@@ -122,9 +122,8 @@ public class MainActivity extends AppCompatActivity {
                 u.LaiXe = Boolean.parseBoolean(c.getString(2));
                 if(MyFunction.myLocation==null){
                     Toasts("Đang lấy vị trí");
-                    return;
                 }
-                if(u.LaiXe){
+                else if(u.LaiXe){
                     Intent intent = new Intent(MainActivity.this,LaiXeActivity.class);
                     intent.putExtra("SDT",u.SDT);
                     startActivity(intent);

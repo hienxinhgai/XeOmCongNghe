@@ -115,7 +115,8 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
                         String message= "Vị trí khách cách bạn: " + MyFunction.khoagCach(myLocation,location) + " km"
                                 +"\nĐiểm đến: " + d.viTriDich
                                 + "\nQuãng đường: " + d.khoangCach + " km"
-                                + "\nTổng tiền: " + d.chiPhi + " đồng\n";
+                                + "\nTổng tiền: " + d.chiPhi + " đồng\n"
+                                + "\nGhi chú: " + d.ghiChu + "\n";
 
                         new AlertDialog.Builder(YeuCauDatXeActivity.this)
                                 .setTitle("Thông tin chuyến")

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="40dp"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thông tin đặt xe"
+        android:textSize="30dp"
+        android:textColor="#ff0000"
+        android:layout_margin="30dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:id="@+id/tvTitle"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Điểm đến:"
+        android:layout_below="@id/tvTitle"
+        android:layout_margin="10dp"
+        android:id="@+id/tvDiemDen"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Khoảng cách:"
+        android:layout_below="@id/tvDiemDen"
+        android:layout_margin="10dp"
+        android:id="@+id/tvKhoangCach"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Giá cả:"
+        android:layout_below="@id/tvKhoangCach"
+        android:layout_margin="10dp"
+        android:id="@+id/tvGiaCa"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chi phí:"
+        android:layout_below="@id/tvGiaCa"
+        android:layout_margin="10dp"
+        android:id="@+id/tvChiPhi"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ghi chú với tài xế:"
+        android:layout_below="@id/tvChiPhi"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/tvGhiChu" />
+
+    <EditText
+        android:layout_marginLeft="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tvGhiChu"
+        android:layout_below="@id/tvChiPhi"
+        android:inputType="text"
+        android:id="@+id/edtGhiChu"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="right"
+        android:layout_below="@+id/tvGhiChu"
+        android:layout_marginTop="20dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hủy"
+            android:id="@+id/btnHuyDialog"
+            android:layout_marginRight="10dp"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đặt"
+            android:id="@+id/btnDatXeDialog"
+            android:layout_marginRight="20dp"/>
+    </LinearLayout>
+
+
+
+</RelativeLayout>
