@@ -3,11 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:title="Yêu cầu đặt xe"
         android:id="@+id/itemYeuCauDatXe"></item>
+
     <item android:title="Gọi khách hàng"
         android:id="@+id/itemCallClient"></item>
+
+    <item android:id="@+id/itemDoiMatKhau"
+        android:title="Đổi mật khẩu"></item>
+
     <item android:title="Đăng xuất"
         android:id="@+id/itemLogout"></item>
-    <item
-        android:id="@+id/itemDoiMatKhau"
-        android:title="Đổi mật khẩu"></item>
 </menu>
