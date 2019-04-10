@@ -55,6 +55,7 @@ public class DoiMatKhauActivity extends AppCompatActivity {
 
                                 database.child("users").child(u.SDT).child("password").setValue(edtMatKhauMoi.getText().toString());
                                 Toast.makeText(DoiMatKhauActivity.this,"Đổi mật khẩu thành công",Toast.LENGTH_LONG).show();
+                                finish();
 
                         }
 
