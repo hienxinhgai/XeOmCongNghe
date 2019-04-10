@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                if(MyFunction.myLocation==null)
-                    Toasts("Lấy vị trí thành công");
+//                if(MyFunction.myLocation==null)
+//                    Toasts("Lấy vị trí thành công");
                 MyFunction.myLocation=new LatLng(location.getLatitude(),location.getLongitude());
             }
 
@@ -187,9 +187,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        Toasts("Đăng xuất thành công");
-    }
 }

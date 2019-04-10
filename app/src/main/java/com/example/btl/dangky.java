@@ -33,7 +33,6 @@ public class dangky extends AppCompatActivity {
     EditText edtHoTen, edtSDT,edtMK,edtNLMK,edtAuthCode;
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     String authCode;
-    PhoneAuthProvider.ForceResendingToken token ;
     FirebaseAuth mAuth;
     DatabaseReference database;
 
@@ -55,7 +54,6 @@ public class dangky extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dangky);
-
         DangKyActivity=this;
         ckbLaiXe = findViewById(R.id.ckbxLaiXe);
         btnDangKy = (Button) findViewById(R.id.button);
@@ -86,20 +84,19 @@ public class dangky extends AppCompatActivity {
             }
 
             @Override
-            public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                super.onCodeSent(s, forceResendingToken);
+            public void onCodeSent(String id, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                super.onCodeSent(id, forceResendingToken);
+
                 Toast.makeText(dangky.this,"Đã gửi mã xác nhận",Toast.LENGTH_LONG).show();
-                authCode =s;
-                token = forceResendingToken;
+                authCode =id;
             }
         };
 
         btnSentCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                edtSDT.setEnabled(false);
+                edtSDT.setEnabled(false); // khong cho sua sdt
                 //hàm dùng để gửi mã xác nhận vào điện thoại
-                //mCallbacks dùng để xác nhận xem mã đã được gửi đi chưa, mã nhập vào đã đúng chưa
                  PhoneAuthProvider.getInstance().verifyPhoneNumber(
                         "+840" + edtSDT.getText().toString().trim(),        // Phone number to verify
                         60,                 // Timeout duration
@@ -162,7 +159,7 @@ public class dangky extends AppCompatActivity {
     private void DangKyTaiKhoan(User user){
         database.child("users").child(user.SDT).setValue(user);
         Toasts("Đăng ký thành công");
-        super.onBackPressed(); // quay lại activity trước
+       finish(); // quay lại activity trước
     }
 
 }
