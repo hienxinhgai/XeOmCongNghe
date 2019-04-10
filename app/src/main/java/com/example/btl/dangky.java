@@ -95,6 +95,10 @@ public class dangky extends AppCompatActivity {
         btnSentCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(edtSDT.getText().toString().equals("")) {
+                    Toasts("chưa điền số điện thoại");
+                    return;
+                }
                 edtSDT.setEnabled(false); // khong cho sua sdt
                 //hàm dùng để gửi mã xác nhận vào điện thoại
                  PhoneAuthProvider.getInstance().verifyPhoneNumber(
@@ -111,6 +115,11 @@ public class dangky extends AppCompatActivity {
         btnDangKy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(edtHoTen.getText().toString().equals("")|| edtMK.getText().toString().equals("")||edtAuthCode.getText().toString().equals(""))
+                {
+                    Toasts("chưa điền đầy đủ thông tin");
+                    return;
+                }
                 if(  edtMK.getText().toString().equals(edtNLMK.getText().toString())){
                     if(authCode==null){
                         Toasts("Chưa gửi mã xác nhận");
@@ -118,7 +127,7 @@ public class dangky extends AppCompatActivity {
                     }
 //                    Toast.makeText(dangky.this,"code:" + edtAuthCode.getText().toString()+"   "+authCode,Toast.LENGTH_LONG).show();
                     PhoneAuthCredential credential = PhoneAuthProvider.getCredential(authCode, edtAuthCode.getText().toString().trim());
-                    signInWithPhoneAuthCredential(credential);
+                    kiemTraMaXacNHan(credential);
 
                 }
                 else {
@@ -129,7 +138,7 @@ public class dangky extends AppCompatActivity {
         });
 
     }
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+    private void kiemTraMaXacNHan(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -148,9 +157,6 @@ public class dangky extends AppCompatActivity {
                         } else {
                             Toast.makeText(dangky.this,"Mã xác thực không đúng",Toast.LENGTH_LONG).show();
                             // Sign in failed, display a message and update the UI
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                // The verification code entered was invalid
-                            }
                         }
                     }
                 });
