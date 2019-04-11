@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">BTL</string>
-    <string name="title_activity_nguoi_dung">Map</string>
-    <string name="title_activity_lai_xe">Map</string>
+    <string name="app_name">Grap</string>
+    <string name="title_activity_nguoi_dung">Người dùng</string>
+    <string name="title_activity_lai_xe">Lái Xe
+    </string>
 </resources>
