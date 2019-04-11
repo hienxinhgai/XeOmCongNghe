@@ -101,7 +101,7 @@ public class dangky extends AppCompatActivity {
                 }
                 edtSDT.setEnabled(false); // khong cho sua sdt
                 //hàm dùng để gửi mã xác nhận vào điện thoại
-                 PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                PhoneAuthProvider.getInstance().verifyPhoneNumber(
                         "+840" + edtSDT.getText().toString().trim(),        // Phone number to verify
                         60,                 // Timeout duration
                         TimeUnit.SECONDS,   // Unit of timeout
