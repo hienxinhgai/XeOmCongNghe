@@ -108,7 +108,7 @@
         android:background="@color/colorPrimary"
         android:text="Đăng ký"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtAuthCode" />
+        app:layout_constraintTop_toBottomOf="@+id/edtMaXacNhan" />
 
     <TextView
         android:id="@+id/textView7"
@@ -122,7 +122,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <EditText
-        android:id="@+id/edtAuthCode"
+        android:id="@+id/edtMaXacNhan"
         android:layout_width="wrap_content"
         android:layout_height="41dp"
         android:layout_marginStart="32dp"
@@ -138,7 +138,7 @@
         app:layout_constraintTop_toBottomOf="@+id/edtNLMK" />
 
     <Button
-        android:id="@+id/btnSentCode"
+        android:id="@+id/btnGuiMaXacNhan"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:layout_marginStart="28dp"

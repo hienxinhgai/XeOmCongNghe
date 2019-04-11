@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,7 +17,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
@@ -29,8 +27,8 @@ import java.util.concurrent.TimeUnit;
 
 public class dangky extends AppCompatActivity {
     CheckBox ckbLaiXe;
-    Button btnDangKy, btnSentCode;
-    EditText edtHoTen, edtSDT,edtMK,edtNLMK,edtAuthCode;
+    Button btnDangKy, btnGuiMaXacNhan;
+    EditText edtHoTen, edtSDT,edtMK,edtNLMK,edtMaXacNhan;
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     String authCode;
     FirebaseAuth mAuth;
@@ -45,7 +43,7 @@ public class dangky extends AppCompatActivity {
     public void SetAuthCode(final String s){
         DangKyActivity.runOnUiThread(new Runnable() {
             public void run() {
-                edtAuthCode.setText(s);
+                edtMaXacNhan.setText(s);
             }
         });
     }
@@ -61,8 +59,8 @@ public class dangky extends AppCompatActivity {
         edtSDT = (EditText)findViewById(R.id.edtSDT);
         edtMK = (EditText)findViewById(R.id.edtMK);
         edtNLMK = (EditText) findViewById(R.id.edtNLMK);
-        btnSentCode = (Button)findViewById(R.id.btnSentCode) ;
-        edtAuthCode = (EditText)findViewById(R.id.edtAuthCode);
+        btnGuiMaXacNhan = (Button)findViewById(R.id.btnGuiMaXacNhan) ;
+        edtMaXacNhan = (EditText)findViewById(R.id.edtMaXacNhan);
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance().getReference();
 
@@ -92,7 +90,7 @@ public class dangky extends AppCompatActivity {
             }
         };
 
-        btnSentCode.setOnClickListener(new View.OnClickListener() {
+        btnGuiMaXacNhan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(edtSDT.getText().toString().equals("")) {
@@ -115,7 +113,7 @@ public class dangky extends AppCompatActivity {
         btnDangKy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(edtHoTen.getText().toString().equals("")|| edtMK.getText().toString().equals("")||edtAuthCode.getText().toString().equals(""))
+                if(edtHoTen.getText().toString().equals("")|| edtMK.getText().toString().equals("")||edtMaXacNhan.getText().toString().equals(""))
                 {
                     Toasts("chưa điền đầy đủ thông tin");
                     return;
@@ -126,7 +124,7 @@ public class dangky extends AppCompatActivity {
                         return;
                     }
 //                    Toast.makeText(dangky.this,"code:" + edtAuthCode.getText().toString()+"   "+authCode,Toast.LENGTH_LONG).show();
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(authCode, edtAuthCode.getText().toString().trim());
+                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(authCode, edtMaXacNhan.getText().toString().trim());
                     kiemTraMaXacNHan(credential);
 
                 }

@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         if( c.moveToNext()){
                 User u = new User();
                 u.SDT = c.getString(0);
-                u.password = c.getString(1);
+              //  u.password = c.getString(1);
                 u.LaiXe = Boolean.parseBoolean(c.getString(2));
                 if(MyFunction.myLocation==null){
                     Toasts("Đang lấy vị trí");
