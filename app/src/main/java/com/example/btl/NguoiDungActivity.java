@@ -145,9 +145,9 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
         public void onClick(View v) {
             if(btnCallDriver.getText().toString().equals("HỦY CHUYẾN")){
                 database.child("yeuCauDatXe").child(SDT).removeEventListener(childListener);
-                database.child("yeuCauDatXe").child(SDT).removeValue();
                 btnCallDriver.setText("ĐẶT XE");
                 Toasts("Hủy chuyến thành công");
+                database.child("yeuCauDatXe").child(SDT).removeValue();
                 return;
             }
 
@@ -227,6 +227,7 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
                 return;
             btnCallDriver.setText("ĐẶT XE");
 
+            //rung dien thoai
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             if (vibrator.hasVibrator()) {
                 vibrator.vibrate(500); // for 500 ms
@@ -290,6 +291,8 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
                     Toasts("Chưa lấy được vị trí");
                     return;
                 }
+
+                //ve duong di
                 // Adding new item to the ArrayList
                 markerPoints.add(MyFunction.myLocation);
                 markerPoints.add(DiemDen);

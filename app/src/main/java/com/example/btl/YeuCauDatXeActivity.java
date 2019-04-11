@@ -104,6 +104,7 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
             }
         });
 
+        //click yeu cau dat xe
         lvYeuCauDatXe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -117,7 +118,6 @@ public class YeuCauDatXeActivity extends AppCompatActivity {
                                 + "\nQuãng đường: " + d.khoangCach + " km"
                                 + "\nTổng tiền: " + d.chiPhi + " đồng\n"
                                 + "\nGhi chú: " + d.ghiChu + "\n";
-
                         new AlertDialog.Builder(YeuCauDatXeActivity.this)
                                 .setTitle("Thông tin chuyến")
                                 .setMessage(message)

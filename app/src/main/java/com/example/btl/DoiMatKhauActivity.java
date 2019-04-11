@@ -26,9 +26,6 @@ public class DoiMatKhauActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doi_mat_khau2);
 
-        //lay du lieu putExtra ben kia nhu nay
-        //da putextra chua
-        // hinh nhu chua vay put di
         SDT = getIntent().getStringExtra("SDT");
         btnDoiMatKhau = (Button) findViewById(R.id.btnDoiMatKhau);
         edtMatKhau = (EditText) findViewById(R.id.edtMatKhau);
@@ -38,19 +35,11 @@ public class DoiMatKhauActivity extends AppCompatActivity {
         btnDoiMatKhau.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               //dung intent ma lay lam di thế cần . toString k
-                //no la string roiroostring lam gi nưa :D
-                // h thì nó k chạy luôn
-                //lay 1 lan dung single
-                //user viet thuong ok
-                //sdt null day nay
-                //sao lai la null nhi
                 database.child("users").child(SDT).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {//bao lay edtitext la phai .getText.tostring mà ok rồi đấy
                         User u = dataSnapshot.getValue(User.class);
                         if(u.password.equals(edtMatKhau.getText().toString()) && edtMatKhauMoi.getText().toString().equals(edtNhapLaiMatKhau.getText().toString())) {
-//ok roi
                             // cái ben ham nguoi dùng no k chuyen ve main
 
                                 database.child("users").child(u.SDT).child("password").setValue(edtMatKhauMoi.getText().toString());
