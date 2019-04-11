@@ -378,7 +378,7 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     // Fetches data from url passed
-    private class DownloadTask extends AsyncTask<String, Void, String> {
+    protected class DownloadTask extends AsyncTask<String, Void, String> {
 
         // Downloading data in non-ui thread
         @Override
@@ -422,8 +422,7 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
             try{
                 jObject = new JSONObject(jsonData[0]);
                 DirectionsJSONParser parser = new DirectionsJSONParser();
-
-                // Starts parsing data
+                        // Starts parsing data
                 routes = parser.parse(jObject);
             }catch(Exception e){
                 e.printStackTrace();
@@ -437,7 +436,7 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
             ArrayList points = null;
             PolylineOptions lineOptions = null;
             if(result.size()==0){
-                Toasts("result line 340 size= 0");
+                Toasts("Không lấy được đường đi");
                 return;
             }
 
@@ -464,8 +463,8 @@ public class NguoiDungActivity extends AppCompatActivity implements OnMapReadyCa
 
                 // Adding all the points in the route to LineOptions
                 lineOptions.addAll(points);
-                lineOptions.width(2);
-                lineOptions.color(Color.RED);
+                lineOptions.width(8);
+                lineOptions.color(Color.BLUE);
 
             }
 

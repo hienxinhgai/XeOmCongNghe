@@ -3,6 +3,7 @@ package com.example.btl;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -27,6 +28,15 @@ public class MyFunction {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double d = 6366 * c;
         return Math.round(d*10000)*1.0/10000;
+//        Location loc1 = new Location("");
+//        loc1.setLatitude(start.latitude);
+//        loc1.setLongitude(start.longitude);
+//
+//        Location loc2 = new Location("");
+//        loc2.setLatitude(end.latitude);
+//        loc2.setLongitude(end.longitude);
+//
+//        return loc1.distanceTo(loc2)*1.0/1000;
     }
 
     public static int chiPhi(LatLng start, LatLng end){
